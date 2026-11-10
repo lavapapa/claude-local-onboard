@@ -10,9 +10,9 @@
 
 ## 用法
 
-把下面这段提示词发给你的 Agent（例如 Codex），并将 `<repo_url>` 替换为本仓库地址：
+把下面这段提示词发给你的 Agent（例如 Codex）：
 
-> 安装 skill：`<repo_url>` 并用该 skill 帮我搭建起 Claude Code 使用环境。
+> 安装 skill：https://github.com/lavapapa/claude-local-onboard 并用该 skill 帮我搭建起 Claude Code 使用环境。
 
 Skill 会引导 Agent 分阶段盘点现状、备份旧数据、配置环境、验收网络与 CLI，并在关键步骤说明影响和恢复方式。
 

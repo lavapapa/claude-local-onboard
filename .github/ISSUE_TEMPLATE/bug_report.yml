@@ -1,0 +1,52 @@
+name: 流程卡住或验收不通过
+description: 某个阶段无法继续，或检查结果与文档预期不符
+title: "[卡住] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        提交前请去掉订阅地址、令牌、Cookie、验证码、完整 IP 和账号信息。脱敏后的结论足够定位问题。
+  - type: input
+    id: stage
+    attributes:
+      label: 卡住的阶段
+      description: 对应 SKILL.md 的编号与标题，例如「4. 安装 CCBaga 与 Claude Code，统一本机环境」
+      placeholder: "3. 配置出口与日常网络白名单"
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: 环境
+      description: macOS 版本、芯片、Mihomo 与 CCBaga 版本（安装日期）
+      placeholder: "macOS 15.3 / Apple Silicon / Mihomo 1.19.x / CCBaga 0.4.x"
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 文档预期
+      description: 哪份文档、哪一句、预期看到什么结果
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: 实际现象
+      description: 命令输出、界面提示或检查页结论；请脱敏
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: tried
+    attributes:
+      label: 已尝试的处理
+      description: 回退步骤、重启、换节点等，以及是否改变了结果
+  - type: checkboxes
+    id: redacted
+    attributes:
+      label: 确认
+      options:
+        - label: 内容已脱敏，不含订阅地址、令牌、Cookie、验证码或完整 IP
+          required: true

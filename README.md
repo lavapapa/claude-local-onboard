@@ -24,6 +24,10 @@
 
 ## 适用边界
 
+本 skill 只用于降低本机 Claude Code 接入环境的泄漏风险：代理/TUN、DNS、IPv6、WebRTC、进程旁路、工具输出等。
+
+它不提供账号注册、订阅购买、KYC/身份验证、Claude Desktop 使用、平台风控或封禁处理方面的帮助，也不承诺通过任何平台的风险检查；这些请按官方流程处理。
+
 - 结果取决于 Anthropic 当时的资格判断与风控，本项目只处理本机环境
 - 登录、验证码、付费与系统授权由你在本机亲自完成
 - 所有二进制从官方来源获取；订阅与账号凭据由你保管
@@ -68,6 +72,7 @@ Agent 会先问清使用方式、设备是否经常移动、当前网络与订�
   - `network-check-tools.md` — 出口、DNS、IP 质量与 WebRTC 检查工具
   - `login-and-cli-acceptance.md` — 登录前预验收与登录后 CLI 验收
   - `hardening-and-recovery.md` — 最小加固、恢复卡片与交付摘要
+  - `ongoing-maintenance.md` — 接入后的长期维护：配置生效、启动链、沙盒验证、脱敏边界与恢复
   - `dedicated-process-proxy.md` — 常用移动设备时的进程代理试用方案
   - `minimal-path.md` — 不上整机 TUN 的最小可用路径
 - `.github/ISSUE_TEMPLATE/` — 问题与经验反馈模板

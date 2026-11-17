@@ -104,6 +104,7 @@ Claude Code 更新或重装后，重新检查统一启动入口、直接二进�
 | [网络检查工具目录](references/network-check-tools.md) | 选择第三方出口、DNS、IP 质量及 WebRTC 检查工具 |
 | [登录与 CLI 验收](references/login-and-cli-acceptance.md) | 引导用户完成认证、验收各入口并输出脱敏证据 |
 | [加固与恢复](references/hardening-and-recovery.md) | 设定最小必要保护、故障处理与交付记录 |
+| [接入后的长期维护](references/ongoing-maintenance.md) | 已完成接入，需要日常检查、变更或恢复时 |
 
 ## 当前资料入口
 

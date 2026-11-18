@@ -6,13 +6,13 @@ body:
   - type: markdown
     attributes:
       value: |
-        反馈会用来修正阶段划分、验收门槛和恢复步骤。请勿粘贴订阅地址、令牌、Cookie、验证码或完整 IP。
+        反馈会用来改进阶段划分、沙盒策略、验收探针和恢复步骤。请勿粘贴订阅地址、Secret、令牌、Cookie、验证码或完整 IP。
   - type: dropdown
     id: outcome
     attributes:
       label: 最终结果
       options:
-        - 全部必需项通过
+        - 全部必需项通过（含代理停机阻断验证）
         - 部分通过，有未覆盖项
         - 卡住未完成
         - 中途放弃并回退
@@ -21,11 +21,11 @@ body:
   - type: dropdown
     id: path
     attributes:
-      label: 采用的路径
+      label: 采用的网络架构
       options:
-        - Mihomo TUN 固定出口
-        - 最小可用路径（系统代理 + CLI 变量）
-        - 专用进程代理试用
+        - 模式 A：TUN 固定出口 + sandbox-exec（推荐）
+        - 模式 B：本地代理端口 + sandbox-exec（移动设备/不开 TUN）
+        - 模式 C：仅系统代理 + CLI 代理变量
         - 其他
     validations:
       required: true
@@ -33,14 +33,14 @@ body:
     id: env
     attributes:
       label: 环境
-      description: macOS 版本、芯片、各工具版本与安装日期
+      description: macOS 版本、芯片架构（Apple Silicon / Intel）、代理客户端与指纹浏览器选型
     validations:
       required: true
   - type: textarea
     id: friction
     attributes:
       label: 卡顿或意外的地方
-      description: 哪一步最花时间、哪一步文档说得不够、哪里 Agent 做错了
+      description: 哪一步最花时间、哪一步文档说得不够清楚、哪里 Agent 理解有偏差
     validations:
       required: true
   - type: textarea
@@ -53,5 +53,5 @@ body:
     attributes:
       label: 确认
       options:
-        - label: 内容已脱敏，不含订阅地址、令牌、Cookie、验证码或完整 IP
+        - label: 内容已脱敏，不含订阅地址、Secret、令牌、Cookie、验证码或完整 IP
           required: true

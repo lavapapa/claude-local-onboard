@@ -1,26 +1,14 @@
 # Claude Local Onboard
 
-> 让 Codex 等 Agent 替你搭好 Claude Code 的本机环境：干净的工作身份、单一固定出口、网络与本地时间的一致性、可验收、可回退。
+> 面向 Codex / Claude Code 等 Agent 的 macOS 本机 Claude Code 环境搭建、内核级防泄漏加固与长期维护 Skill。
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-![macOS](https://img.shields.io/badge/platform-macOS-blue)
-![Agent Skill](https://img.shields.io/badge/format-Agent%20Skill-brightgreen)
+![Platform: macOS](https://img.shields.io/badge/platform-macOS%20(Apple%20Silicon%20%26%20Intel)-blue)
+![Format: Agent Skill](https://img.shields.io/badge/format-Agent%20Skill-brightgreen)
 
-**目前只支持 macOS。** 流程依赖 Mihomo TUN、macOS 网络扩展授权与 CCBaga 独立指纹浏览器，Linux 与 Windows 用户在本仓库拿不到可用路径。
+只开系统代理或只设 `HTTPS_PROXY` 环境变量，拦不住子进程原生直连、UDP/WebRTC 旁路，也挡不住代理客户端意外退出后的静默回落直连。**Claude Local Onboard** 让你的 Agent 按标准化 7 阶段流程，在任意 Mac（Apple Silicon 或 Intel）上搭出一套**双层防泄漏、代理断连即阻断（fail-closed）、可实测验收、可随时回退**的本地工作环境。
 
-## 这是什么
-
-一个面向 **Codex / Claude Agent** 的流程 Skill。仓库里没有现成脚本，实际配置由 Agent 在你确认后逐步执行：
-
-- 旧环境盘点与完整备份
-- CCBaga 独立指纹浏览器 + 工作身份隔离
-- Mihomo TUN 固定出口 + 日常网络白名单
-- 系统语言、时区、地区显示与定位权限核对
-- 登录前网络 / DNS / IPv6 / WebRTC 验收
-- Claude Code CLI 安装与统一启动入口
-- 登录后验收、脱敏证据摘要与恢复说明
-
-每个阶段都有验收门槛和回退方法：网关、DNS、路由改动前先记录原配置，节点与规则变更后重新核对实际出口。
+---
 
 ## 适用边界
 
@@ -28,75 +16,104 @@
 
 它不提供账号注册、订阅购买、KYC/身份验证、Claude Desktop 使用、平台风控或封禁处理方面的帮助，也不承诺通过任何平台的风险检查；这些请按官方流程处理。
 
-- 结果取决于 Anthropic 当时的资格判断与风控，本项目只处理本机环境
-- 登录、验证码、付费与系统授权由你在本机亲自完成
-- 所有二进制从官方来源获取；订阅与账号凭据由你保管
+---
 
-## 核心原则
+## 核心设计：为什么它能防旁路、防断连回落
 
-1. 先备份，再清理，每一步可回退
-2. 固定单一出口，代理故障时阻断未授权公网流量
-3. 浏览器与 CLI 走同一条受控路径，减少旁路
-4. 不指导伪造时区/位置，尊重真实所在地
-5. 每阶段都有验收，不通过不进入下一步
+```mermaid
+flowchart LR
+  subgraph Host["macOS 本机受控边界"]
+    CLI["Claude Code CLI 及全子进程树<br/>(bash / curl / git / node / MCP)"]
+    SB["macOS sandbox-exec (Seatbelt)<br/>禁止一切公网 TCP/UDP/IPv6 直连<br/>仅放行 localhost 代理端口，封禁 9090 控制口"]
+    BR["独立指纹浏览器 Profile<br/>(AdsPower / MoreLogin / CCBaga / 独立 Chrome)<br/>禁用非代理 WebRTC UDP + 对齐时区语言"]
+    PRX["Mihomo 系客户端 / TUN<br/>127.0.0.1:7890 + 持久覆写规则"]
+  end
 
-## 快速开始
-
-把下面这段直接发给你的 Agent（Codex、Claude Code 等）：
-
-```
-安装 skill：
-https://github.com/lavapapa/claude-local-onboard
-
-并用该 skill 帮我搭建起 Claude Code 使用环境。
+  CLI --> SB --> PRX
+  BR --> PRX
+  PRX -->|"锁定单一 FIXED-EXIT"| EXIT["固定目标出口节点<br/>(API 请求 + DoH 远端解析)"]
+  PRX -.->|"显式白名单 DIRECT"| LAN["日常必需直连<br/>(LAN / SSH / Tailscale / 远程桌面)"]
 ```
 
-Agent 会先问清使用方式、设备是否经常移动、当前网络与订阅、必须保留的访问（校园网、局域网、SSH、UU、Tailscale/tailcat、远程开发）、旧数据处理意愿，再按阶段执行。第 2 阶段的清理与 CLI 重装建议在 Codex 或独立终端里做，避免 Claude Code 在运行中重装自己。
-
-## 前置条件
-
-- macOS
-- 可用的 Mihomo 订阅，或你能提供节点
-- 愿意让 Agent 操作本机网络与 Claude 相关配置（会先说明影响并做备份）
-- 一次网络切换窗口中不依赖这台 Mac 远程办公
-
-## 仓库结构
-
-- `SKILL.md` — 主流程：阶段划分、决策点、验收标准与证据要求
-- `references/` — 按需读取的参考文档
-  - `location-and-egress-signals.md` — 位置与出口信号分析
-  - `preflight-and-data-boundary.md` — 目标盘点、备份与清理边界
-  - `mihomo-tun-fixed-egress.md` — TUN 固定出口与白名单配置
-  - `ccbaga-and-browser.md` — CCBaga 安装、身份与浏览器 profile
-  - `macos-timezone-and-locale.md` — 系统语言、时区、地区与定位权限
-  - `network-check-tools.md` — 出口、DNS、IP 质量与 WebRTC 检查工具
-  - `login-and-cli-acceptance.md` — 登录前预验收与登录后 CLI 验收
-  - `hardening-and-recovery.md` — 最小加固、恢复卡片与交付摘要
-  - `ongoing-maintenance.md` — 接入后的长期维护：配置生效、启动链、沙盒验证、脱敏边界与恢复
-  - `dedicated-process-proxy.md` — 常用移动设备时的进程代理试用方案
-  - `minimal-path.md` — 不上整机 TUN 的最小可用路径
-- `.github/ISSUE_TEMPLATE/` — 问题与经验反馈模板
-- `CONTRIBUTING.md` — 贡献方式
-- `LICENSE`
-
-想直接读流程就从 `SKILL.md` 开始；只关心某一步就跳到对应参考文档。
-
-## 已知限制
-
-- 只在 macOS + Mihomo TUN 路径上验证过，其他组合需要重新验收
-- TUN 影响整机网络，节点切换（尤其跨国）应尽量少，切换后需重新核对出口
-- 设备经常移动时，TUN 可能不是最优解，Skill 会提示专用进程代理作为次选
-- 第三方 IP 情报与泄露检测站点只代表当次观测，不能当作平台内部规则
-- 软件版本刻意不固定，安装当天的版本、来源与日期会记入交付摘要
-
-## 使用反馈
-
-遇到检验不通过、工具已失效或某一步在你机器上表现不同，欢迎按 Issue 模板提交，附上 macOS 版本、工具版本和脱敏后的观测结果。请勿粘贴订阅地址、令牌、Cookie、验证码或完整 IP。
-
-## 许可
-
-MIT License，详见 [LICENSE](LICENSE)。
+1. **进程级内核强制沙盒（`sandbox-exec`）**：不依赖程序“自觉读取代理变量”。通过 macOS 原生 Seatbelt 策略拦截 Claude Code 及所有子进程的非回环网络出站，直连公网 IPv4 / IPv6 / UDP 一律在内核层返回 `EPERM`；同时封禁代理管理端口与订阅配置文件读取。
+2. **启动前预检 + 代理停机 fail-closed**：统一入口 `~/.local/bin/claude` 启动前先对本地代理发起 `CONNECT` 预检；运行期间哪怕代理客户端崩溃或 TUN 网卡消失，流量也立即阻断而绝不回落物理网卡直连。
+3. **单一固定出口 + 日常工作流共存**：通过 Mihomo 持久覆写锁定单一稳定节点，防止订阅更新冲掉规则或自动测速跨区乱跳；同时显式放行局域网、SSH、Tailscale 等 Mesh VPN 与远程桌面。
+4. **全工具链可替换，无绑定锁死**：Apple Silicon 与 Intel Mac 均支持；代理客户端、指纹浏览器均可按手头工具自由组合。
 
 ---
 
-**重要**：本项目聚焦“减少意外暴露 + 建立可检查的网络边界”，不鼓励、也不提供规避地区限制的方法。使用前请自行确认符合 Anthropic 的服务条款与当地法律。
+## 快速开始
+
+把下面这段直接发给你的 Agent（建议首次清理与安装阶段在 **Codex** 或独立辅助 Agent 中运行，避免正在运行的 Claude Code 清理或重装自身）：
+
+```text
+安装并阅读 skill：
+https://github.com/lavapapa/claude-local-onboard
+
+按该 skill 帮我在本机搭建并验收 Claude Code 运行环境。
+```
+
+Agent 会先做无副作用只读盘点，向你确认期望出口地区（如美国加利福尼亚 `America/Los_Angeles`）、设备固定/移动形态、需保留的日常直连访问与旧数据备份方式，再逐阶段推进。登录、验证码、系统授权与订阅导入全程由你在本机界面亲自操作。
+
+---
+
+## 灵活可选的工具链
+
+| 层级 | 可选工具（任选其一即可） | 职责 |
+|---|---|---|
+| **代理与路由层** | FlClash / Clash Verge Rev / Mihomo Party / Stash / 裸 `mihomo` | 提供本地统一混合端口、TUN 接管、DoH 代理解析、固定出口组与直连白名单 |
+| **进程强制沙盒层** | macOS 原生 `/usr/bin/sandbox-exec` + 受控启动包装器 | 内核态阻断非回环公网连接、屏蔽代理控制口、实现代理停机 fail-closed |
+| **隔离浏览器层** | AdsPower / MoreLogin / CCBaga / 独立 Chromium `--user-data-dir` | 隔离 Web 登录 Cookie 与缓存、收敛 WebRTC/QUIC、绑定本地同一代理端口 |
+| **环境一致性层** | 浏览器 Profile + CLI `TZ`/`LANG`（可选同步 macOS `systemsetup`） | 对齐出口地区的时区、语言与定位权限，全部保留原值回退命令 |
+
+---
+
+## 7 阶段执行与验收流程
+
+| 阶段 | 核心动作 | 过关门槛 |
+|---|---|---|
+| **1. 盘点与定方案** | 只读盘点系统、网络、残留文件与进程，选定网络模式（推荐 TUN + `sandbox-exec`，移动本可选纯端口 + `sandbox-exec`） | 输出脱敏现状摘要，确认备份与回退前提 |
+| **2. 备份与清旧环境** | 完整归档旧配置/会话并校验可读，按确认范围清理 `~/.claude`、`~/.claude.json` 与冲突残留 | 备份可读，新环境目录干净独立 |
+| **3. 固定出口与白名单** | 写入持久覆写配置：统一代理端口、控制口加 Secret、锁定 `FIXED-EXIT`、配置代理解析 DNS 与日常直连白名单 | 出口地区稳定一致，订阅刷新不覆盖规则 |
+| **4. 隔离浏览器与环境对齐** | 配置独立指纹浏览器绑定本地代理，关闭非代理 WebRTC UDP，对齐目标出口时区与语言（如 `America/Los_Angeles`） | 浏览器与预设时区/语言一致，无定位泄露 |
+| **5. 部署 `sandbox-exec` 启动链** | 官方安装 Claude Code，部署 `outbound.sb`、`claude-network-run` 与 `~/.local/bin/claude` 受控包装器 | `PATH` 唯一命中受控入口，直连自检返回 `EPERM` |
+| **6. 登录前预验收与故障注入** | 未登录状态下实测出口、DNS、IPv6、WebRTC、管理口封禁及**受控停代理 fail-closed 阻断测试** | 停代理时严格阻断不直连，日常保留网络正常 |
+| **7. 登录终验与交付恢复卡** | 用户亲自登录授权，验证真实 CLI 进程 `sandbox_check` 受限生效，输出脱敏证据表与一键恢复卡片 | 全部必需项达标，恢复步骤清晰可用 |
+
+首次接入完成后，后续版本更新、配置调整、工具输出脱敏边界与多账号维护可直接让 Agent 按 `references/ongoing-maintenance.md` 执行巡检。
+
+---
+
+## 仓库结构
+
+```text
+claude-local-onboard/
+├── SKILL.md                                 # Agent 主引导流程与阶段门禁
+├── README.md                                # 项目说明与快速上手
+├── CONTRIBUTING.md                          # 贡献与实机验证规范
+├── LICENSE                                  # MIT License
+└── references/                              # Agent 按阶段按需读取的技术参考
+    ├── signals-and-architecture.md          # 信号暴露模型与模式 A/B/C 架构对比
+    ├── preflight-and-cleanup.md             # 只读盘点、Claude 本机路径全表与备份清理
+    ├── egress-and-tun.md                    # Mihomo TUN、持久覆写 YAML 骨架与直连白名单
+    ├── seatbelt-and-launcher.md             # sandbox-exec (outbound.sb) 与受控启动器模板
+    ├── browser-and-locale.md                # 独立指纹浏览器选型与时区/语言对齐方法
+    ├── acceptance-and-delivery.md           # 内核阻断探针、停代理测试、脱敏摘要与恢复卡
+    └── ongoing-maintenance.md               # 接入后的长期维护、防漂移巡检与扩展边界
+```
+
+---
+
+## 已知限制
+
+- **仅支持 macOS**（依赖 macOS 原生 `/usr/bin/sandbox-exec`、`libsandbox`、`networksetup` / `systemsetup` 及 Mihomo TUN），Linux 与 Windows 不适用。
+- **沙盒管出站，不管本地文件读取**：`sandbox-exec` 能彻底封死非回环网络直连，但如果会话允许执行任意本地 Shell 命令（如打印网卡信息进入对话），本地文本仍可能随 API 请求发出；缓解策略与边界详见 [接入后的长期维护](references/ongoing-maintenance.md)。
+- **第三方 IP 库仅供参考**：IPinfo、Scamalytics、Mullvad Check 等站点只代表当次外部观测，不等同于平台内部判定逻辑。
+
+## 问题反馈与贡献
+
+遇到某一步在新版 macOS 或客户端上表现不一致，欢迎通过 Issue 模板提交 macOS 版本、芯片架构、工具版本与**脱敏后**的观测结果（切勿粘贴真实公网 IP、订阅链接、Token、Cookie 或账号信息）。贡献细则见 [CONTRIBUTING.md](CONTRIBUTING.md)。
+
+## 许可
+
+[MIT License](LICENSE)

@@ -12,7 +12,7 @@ Anthropic 公开说明消费者产品会根据请求的公网 IP 及相关信号
 | Claude Code CLI 主进程 | API、OAuth 认证、遥测与自动更新连接的源 IP | 进程继承的 `TZ`、`LANG`/`LC_ALL`、系统时区与区域配置、生效配置目录 | 官方仅支持 `HTTP_PROXY` / `HTTPS_PROXY` / `NO_PROXY`，不支持 `SOCKS`；环境变量只是客户端意愿，不是内核强制边界 |
 | CLI 触发的工具与子进程 | `curl`、`git`、`node`、`python`、包管理器、MCP 服务各自发起的出站连接 | 子进程自身的解析器调用（如 `scutil --dns`）、双栈直连、应用内 DoH、自行清空代理变量 | 父进程设置了代理变量不代表子进程遵守；单次命令读取网卡或环境变量进入对话也会造成文本侧暴露 |
 
-> Claude Desktop 不在本 Skill 的支持范围内（桌面端内嵌网页与原生进程的网络路径与 CLI 不同，此处不作覆盖承诺）。
+> Claude Desktop 默认不在本 Skill 的标准验收范围内：其基于 Electron，默认与外层 `sandbox-exec` 存在嵌套沙盒冲突，且 Dock / 协议回调会绕过命令行包装。关于用 `sandbox-exec --no-sandbox` 或 `TUN + pf` 控制桌面端的实验性分析（未实机验证），见 [`sandbox-exec` 进程沙盒与受控启动链](seatbelt-and-launcher.md#6-延伸能否用-sandbox-exec-启动并控制-claude-desktop实验项--未实测)。
 
 ## 2. 为什么“只开系统代理”或“只开 TUN”都不够
 

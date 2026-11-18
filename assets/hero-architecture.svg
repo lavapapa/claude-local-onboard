@@ -1,0 +1,245 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 468" width="1200" height="468" role="img" aria-label="Claude Local Onboard Architecture">
+  <defs>
+    <!-- Canvas & Card Gradients -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#090E1A"/>
+      <stop offset="50%" stop-color="#0D1526"/>
+      <stop offset="100%" stop-color="#09101D"/>
+    </linearGradient>
+
+    <radialGradient id="glowIndigo" cx="50%" cy="34%" r="38%">
+      <stop offset="0%" stop-color="#4F46E5" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#4F46E5" stop-opacity="0"/>
+    </radialGradient>
+
+    <radialGradient id="glowEmerald" cx="84%" cy="56%" r="30%">
+      <stop offset="0%" stop-color="#10B981" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#10B981" stop-opacity="0"/>
+    </radialGradient>
+
+    <linearGradient id="cardBlue" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#13203B"/>
+      <stop offset="100%" stop-color="#0E172B"/>
+    </linearGradient>
+
+    <linearGradient id="cardSandbox" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#151F3D"/>
+      <stop offset="100%" stop-color="#10172E"/>
+    </linearGradient>
+
+    <linearGradient id="cardMihomo" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0E2436"/>
+      <stop offset="100%" stop-color="#0B1928"/>
+    </linearGradient>
+
+    <linearGradient id="cardExit" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0D2D24"/>
+      <stop offset="100%" stop-color="#091F1A"/>
+    </linearGradient>
+
+    <linearGradient id="cardBlock" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#28121E"/>
+      <stop offset="100%" stop-color="#1A0D15"/>
+    </linearGradient>
+
+    <!-- Subtle Dot Grid -->
+    <pattern id="dotGrid" width="24" height="24" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1" fill="#334155" opacity="0.38"/>
+    </pattern>
+
+    <!-- Arrow Markers -->
+    <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto">
+      <path d="M 1 1.5 L 8.5 5 L 1 8.5 z" fill="#60A5FA"/>
+    </marker>
+    <marker id="arrowTeal" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto">
+      <path d="M 1 1.5 L 8.5 5 L 1 8.5 z" fill="#2DD4BF"/>
+    </marker>
+    <marker id="arrowAmber" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto">
+      <path d="M 1 1.5 L 8.5 5 L 1 8.5 z" fill="#F59E0B"/>
+    </marker>
+    <marker id="arrowEmerald" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 1 1.5 L 8.5 5 L 1 8.5 z" fill="#34D399"/>
+    </marker>
+    <marker id="arrowRed" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto">
+      <path d="M 1 1.5 L 8.5 5 L 1 8.5 z" fill="#FB7185"/>
+    </marker>
+    <marker id="arrowSlate" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto">
+      <path d="M 1 1.5 L 8.5 5 L 1 8.5 z" fill="#94A3B8"/>
+    </marker>
+  </defs>
+
+  <!-- Outer Frame -->
+  <rect x="1" y="1" width="1198" height="466" rx="22" fill="url(#bgGrad)" stroke="#1E293B" stroke-width="2"/>
+  <rect x="2" y="2" width="1196" height="464" rx="21" fill="url(#dotGrid)"/>
+  <rect x="2" y="2" width="1196" height="464" rx="21" fill="url(#glowIndigo)"/>
+  <rect x="2" y="2" width="1196" height="464" rx="21" fill="url(#glowEmerald)"/>
+
+  <!-- Main Content Group (shifted cleanly up with balanced 36px padding) -->
+  <g transform="translate(0, -82)">
+    <!-- ==================== COLUMN HEADERS ==================== -->
+    <g font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" font-weight="600" letter-spacing="0.8">
+      <text x="44" y="118" fill="#64748B">01 · 本机工作入口</text>
+      <text x="392" y="118" fill="#818CF8">02 · 本机双层受控边界 (核心)</text>
+      <text x="884" y="118" fill="#64748B">03 · 网络分流与阻断结果</text>
+    </g>
+
+    <!-- ==================== CONNECTOR ARROWS ==================== -->
+    <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <!-- 1A CLI -> Sandbox -->
+      <path d="M 316 190 L 384 190" stroke="#60A5FA" stroke-width="2.2" marker-end="url(#arrowBlue)"/>
+
+      <!-- 1B Desktop (Experimental) -> Sandbox -->
+      <path d="M 316 300 L 384 300" stroke="#F59E0B" stroke-width="1.8" stroke-dasharray="5 5" marker-end="url(#arrowAmber)"/>
+
+      <!-- 1C Browser -> Mihomo -->
+      <path d="M 316 446 L 384 446" stroke="#2DD4BF" stroke-width="2.2" marker-end="url(#arrowTeal)"/>
+
+      <!-- Sandbox -> Mihomo (Vertical loopback link) -->
+      <path d="M 596 326 L 596 368" stroke="#60A5FA" stroke-width="2.4" marker-end="url(#arrowBlue)"/>
+
+      <!-- Sandbox -> Blocked Direct Public (Top Right) -->
+      <path d="M 800 196 L 876 196" stroke="#FB7185" stroke-width="2.2" stroke-dasharray="6 4" marker-end="url(#arrowRed)"/>
+
+      <!-- Mihomo -> Fixed Exit (Middle Right) -->
+      <path d="M 800 422 L 836 422 Q 848 422 848 410 L 848 348 Q 848 336 860 336 L 876 336" stroke="#34D399" stroke-width="2.6" marker-end="url(#arrowEmerald)"/>
+
+      <!-- Mihomo -> Direct Whitelist (Bottom Right) -->
+      <path d="M 800 478 L 876 478" stroke="#94A3B8" stroke-width="1.8" stroke-dasharray="5 5" marker-end="url(#arrowSlate)"/>
+    </g>
+
+    <!-- Connector Inline Badges -->
+    <g font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace" font-size="10.5" font-weight="600">
+      <!-- Loopback badge between Sandbox & Mihomo -->
+      <rect x="526" y="336" width="140" height="22" rx="11" fill="#0F172A" stroke="#3B82F6" stroke-width="1.2"/>
+      <text x="596" y="350.5" text-anchor="middle" fill="#93C5FD">127.0.0.1:7890</text>
+
+      <!-- EPERM badge on Sandbox -> Blocked -->
+      <rect x="812" y="168" width="54" height="20" rx="6" fill="#2A121F" stroke="#F43F5E" stroke-width="1"/>
+      <text x="839" y="181.5" text-anchor="middle" fill="#FDA4AF">EPERM</text>
+    </g>
+
+    <!-- ==================== COLUMN 1: LOCAL WORKLOADS (x=44, w=272) ==================== -->
+    <g font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'PingFang SC', 'Microsoft YaHei', sans-serif">
+
+      <!-- Card 1A: Claude Code CLI (y=134..242) -->
+      <rect x="44" y="134" width="272" height="108" rx="14" fill="url(#cardBlue)" stroke="#3B82F6" stroke-width="1.6"/>
+      <rect x="62" y="152" width="32" height="32" rx="8" fill="#1E3A8A" opacity="0.65"/>
+      <path d="M 70 163 L 76 168 L 70 173 M 79 173 L 86 173" stroke="#93C5FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <text x="104" y="166" fill="#F8FAFC" font-size="15" font-weight="700">Claude Code CLI</text>
+      <text x="104" y="184" fill="#94A3B8" font-size="12">主进程 · Bash · Git · MCP</text>
+      <rect x="62" y="200" width="236" height="26" rx="7" fill="#0B1324" stroke="#1E3A8A" stroke-width="1"/>
+      <text x="180" y="217" text-anchor="middle" fill="#93C5FD" font-size="11.5" font-weight="500">统一受控入口 ~/.local/bin/claude</text>
+
+      <!-- Card 1B: Claude Desktop (y=256..364, Experimental Dashed) -->
+      <rect x="44" y="256" width="272" height="108" rx="14" fill="#121827" stroke="#F59E0B" stroke-width="1.4" stroke-dasharray="6 4"/>
+      <rect x="62" y="274" width="32" height="32" rx="8" fill="#451A03" opacity="0.7"/>
+      <rect x="69" y="282" width="18" height="13" rx="2" stroke="#FCD34D" stroke-width="1.7" fill="none"/>
+      <line x1="74" y1="298" x2="82" y2="298" stroke="#FCD34D" stroke-width="1.7" stroke-linecap="round"/>
+      <text x="104" y="288" fill="#F8FAFC" font-size="14" font-weight="700">Claude Desktop</text>
+      <rect x="226" y="274" width="74" height="20" rx="10" fill="#3B2106" stroke="#F59E0B" stroke-width="1"/>
+      <text x="263" y="287.5" text-anchor="middle" fill="#FCD34D" font-size="10.5" font-weight="600">实验 · 未实测</text>
+      <text x="104" y="306" fill="#94A3B8" font-size="11.5">Electron 内层沙盒默认嵌套冲突</text>
+      <rect x="62" y="322" width="236" height="26" rx="7" fill="#0B111E" stroke="#374151" stroke-width="1"/>
+      <text x="180" y="339" text-anchor="middle" fill="#FDE68A" font-size="11" font-weight="500">套壳需 --no-sandbox · 稳妥选 TUN+PF</text>
+
+      <!-- Card 1C: Isolated Fingerprint Browser (y=378..518) -->
+      <rect x="44" y="378" width="272" height="140" rx="14" fill="#0E2229" stroke="#14B8A6" stroke-width="1.6"/>
+      <rect x="62" y="396" width="32" height="32" rx="8" fill="#115E59" opacity="0.65"/>
+      <circle cx="78" cy="412" r="9" stroke="#5EEAD4" stroke-width="1.7" fill="none"/>
+      <path d="M 69 412 L 87 412 M 78 403 C 81 406 81 418 78 421 M 78 403 C 75 406 75 418 78 421" stroke="#5EEAD4" stroke-width="1.4" fill="none"/>
+      <text x="104" y="410" fill="#F8FAFC" font-size="15" font-weight="700">独立指纹浏览器</text>
+      <text x="104" y="428" fill="#94A3B8" font-size="12">Web 登录 · 账单 · OAuth 授权</text>
+      <rect x="62" y="444" width="236" height="26" rx="7" fill="#09171D" stroke="#115E59" stroke-width="1"/>
+      <text x="180" y="461" text-anchor="middle" fill="#5EEAD4" font-size="11.5" font-weight="500">AdsPower / MoreLogin / CCBaga</text>
+      <rect x="62" y="478" width="236" height="26" rx="7" fill="#09171D" stroke="#115E59" stroke-width="1"/>
+      <text x="180" y="495" text-anchor="middle" fill="#99F6E4" font-size="11.5" font-weight="500">禁非代理 WebRTC · 对齐出口时区</text>
+    </g>
+
+    <!-- ==================== COLUMN 2: DUAL-LAYER CORE BOUNDARY (x=392, w=408) ==================== -->
+    <g font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'PingFang SC', 'Microsoft YaHei', sans-serif">
+
+      <!-- Core Layer A: macOS sandbox-exec (y=134..326) -->
+      <rect x="392" y="134" width="408" height="192" rx="16" fill="url(#cardSandbox)" stroke="#6366F1" stroke-width="2"/>
+      <rect x="412" y="152" width="36" height="36" rx="9" fill="#312E81" opacity="0.8"/>
+      <path d="M 430 160 L 440 164 V 171 C 440 176.5 435.8 180.8 430 182.5 C 424.2 180.8 420 176.5 420 171 V 164 Z" stroke="#A5B4FC" stroke-width="1.8" fill="none"/>
+      <text x="458" y="168" fill="#F8FAFC" font-size="15.5" font-weight="700">macOS sandbox-exec 进程沙盒</text>
+      <text x="458" y="186" fill="#A5B4FC" font-size="12">Seatbelt (outbound.sb) · 覆盖整棵子进程树</text>
+      <rect x="704" y="152" width="78" height="22" rx="11" fill="#1E1B4B" stroke="#6366F1" stroke-width="1"/>
+      <text x="743" y="166.5" text-anchor="middle" fill="#C7D2FE" font-size="11" font-weight="600">内核级强制</text>
+
+      <!-- Rule Row 1: ALLOW -->
+      <rect x="412" y="202" width="368" height="32" rx="8" fill="#0B1922" stroke="#10B981" stroke-width="1" stroke-opacity="0.6"/>
+      <rect x="420" y="209" width="52" height="18" rx="5" fill="#064E3B"/>
+      <text x="446" y="221.5" text-anchor="middle" fill="#6EE7B7" font-size="10.5" font-weight="700" font-family="ui-monospace, Menlo, monospace">ALLOW</text>
+      <text x="482" y="222.5" fill="#E2E8F0" font-size="12">仅放行 localhost 回环代理 + CONNECT 预检</text>
+
+      <!-- Rule Row 2: DENY -->
+      <rect x="412" y="242" width="368" height="32" rx="8" fill="#22111D" stroke="#F43F5E" stroke-width="1" stroke-opacity="0.65"/>
+      <rect x="420" y="249" width="52" height="18" rx="5" fill="#881337"/>
+      <text x="446" y="261.5" text-anchor="middle" fill="#FDA4AF" font-size="10.5" font-weight="700" font-family="ui-monospace, Menlo, monospace">DENY</text>
+      <text x="482" y="262.5" fill="#E2E8F0" font-size="12">拒公网 IPv4 / IPv6 / UDP · 封 9090 控制口与配置</text>
+
+      <!-- Fail-Closed Callout Strip -->
+      <rect x="412" y="282" width="368" height="30" rx="8" fill="#1E132A" stroke="#818CF8" stroke-width="1" stroke-opacity="0.5"/>
+      <text x="596" y="301.5" text-anchor="middle" fill="#DDD6FE" font-size="11.5" font-weight="600">代理退出或断连 → 内核直接拒绝出站，零流量回落物理网卡</text>
+
+      <!-- Core Layer B: Mihomo / TUN Gateway (y=368..518) -->
+      <rect x="392" y="368" width="408" height="150" rx="16" fill="url(#cardMihomo)" stroke="#0EA5E9" stroke-width="1.8"/>
+      <rect x="412" y="386" width="36" height="36" rx="9" fill="#0C4A6E" opacity="0.8"/>
+      <path d="M 421 404 H 439 M 433 398 L 439 404 L 433 410 M 421 398 V 410" stroke="#7DD3FC" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <text x="458" y="402" fill="#F8FAFC" font-size="16" font-weight="700">Mihomo 客户端 / TUN 路由层</text>
+      <text x="458" y="420" fill="#7DD3FC" font-size="12">FlClash · Clash Verge Rev · Mihomo Party · Stash</text>
+
+      <rect x="412" y="436" width="178" height="30" rx="7" fill="#081523" stroke="#1E3A5F" stroke-width="1"/>
+      <text x="501" y="455" text-anchor="middle" fill="#BAE6FD" font-size="11.5" font-weight="500">锁定单一 FIXED-EXIT</text>
+
+      <rect x="602" y="436" width="178" height="30" rx="7" fill="#081523" stroke="#1E3A5F" stroke-width="1"/>
+      <text x="691" y="455" text-anchor="middle" fill="#BAE6FD" font-size="11.5" font-weight="500">远端 DoH 代理解析 DNS</text>
+
+      <rect x="412" y="474" width="178" height="30" rx="7" fill="#081523" stroke="#1E3A5F" stroke-width="1"/>
+      <text x="501" y="493" text-anchor="middle" fill="#BAE6FD" font-size="11.5" font-weight="500">持久覆写防订阅刷新重置</text>
+
+      <rect x="602" y="474" width="178" height="30" rx="7" fill="#081523" stroke="#1E3A5F" stroke-width="1"/>
+      <text x="691" y="493" text-anchor="middle" fill="#BAE6FD" font-size="11.5" font-weight="500">控制口 Secret 鉴权保护</text>
+    </g>
+
+    <!-- ==================== COLUMN 3: EGRESS OUTCOMES (x=884, w=272) ==================== -->
+    <g font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'PingFang SC', 'Microsoft YaHei', sans-serif">
+
+      <!-- Outcome 3A: Blocked Bypass (y=134..250) -->
+      <rect x="884" y="134" width="272" height="116" rx="14" fill="url(#cardBlock)" stroke="#F43F5E" stroke-width="1.6"/>
+      <rect x="902" y="152" width="32" height="32" rx="8" fill="#881337" opacity="0.65"/>
+      <circle cx="918" cy="168" r="8.5" stroke="#FDA4AF" stroke-width="1.8" fill="none"/>
+      <line x1="912" y1="162" x2="924" y2="174" stroke="#FDA4AF" stroke-width="1.8"/>
+      <text x="944" y="166" fill="#FFF1F2" font-size="15" font-weight="700">未授权直连与旁路</text>
+      <rect x="1084" y="152" width="56" height="20" rx="10" fill="#4C0519" stroke="#F43F5E" stroke-width="1"/>
+      <text x="1112" y="165.5" text-anchor="middle" fill="#FDA4AF" font-size="10.5" font-weight="700">已封死</text>
+      <text x="944" y="185" fill="#FDA4AF" font-size="11.5">原生 Socket · IPv6 · 野生 UDP</text>
+      <rect x="902" y="204" width="236" height="30" rx="7" fill="#140910" stroke="#4C0519" stroke-width="1"/>
+      <text x="1020" y="223" text-anchor="middle" fill="#FECDD3" font-size="11.5" font-weight="500">本地 DNS 探测与控制口篡改全拒</text>
+
+      <!-- Outcome 3B: Fixed Target Exit (y=268..410) -->
+      <rect x="884" y="268" width="272" height="142" rx="14" fill="url(#cardExit)" stroke="#10B981" stroke-width="2"/>
+      <rect x="902" y="286" width="32" height="32" rx="8" fill="#065F46" opacity="0.8"/>
+      <path d="M 911 302 L 916 307 L 926 297" stroke="#6EE7B7" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <text x="944" y="300" fill="#ECFDF5" font-size="15" font-weight="700">唯一固定目标出口</text>
+      <text x="944" y="319" fill="#6EE7B7" font-size="12">Claude API · Web 登录 · DoH</text>
+
+      <rect x="902" y="336" width="236" height="26" rx="7" fill="#061A15" stroke="#065F46" stroke-width="1"/>
+      <text x="1020" y="353" text-anchor="middle" fill="#A7F3D0" font-size="11.5" font-weight="500">禁止自动测速漂移与回退 DIRECT</text>
+
+      <rect x="902" y="370" width="236" height="26" rx="7" fill="#061A15" stroke="#065F46" stroke-width="1"/>
+      <text x="1020" y="387" text-anchor="middle" fill="#6EE7B7" font-size="11.5" font-weight="500">时区 / 语言对齐 (如 US-West)</text>
+
+      <!-- Outcome 3C: Explicit Direct Whitelist (y=428..518) -->
+      <rect x="884" y="428" width="272" height="90" rx="14" fill="#111827" stroke="#475569" stroke-width="1.5" stroke-dasharray="6 4"/>
+      <rect x="902" y="444" width="32" height="32" rx="8" fill="#1E293B"/>
+      <path d="M 910 457 H 925 M 921 453 L 925 457 L 921 461 M 926 464 H 911 M 915 460 L 911 464 L 915 468" stroke="#CBD5E1" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <text x="944" y="458" fill="#F1F5F9" font-size="14.5" font-weight="700">显式白名单直连</text>
+      <rect x="1072" y="444" width="68" height="20" rx="10" fill="#1E293B" stroke="#64748B" stroke-width="1"/>
+      <text x="1106" y="457.5" text-anchor="middle" fill="#CBD5E1" font-size="10.5" font-weight="600">DIRECT</text>
+      <text x="944" y="477" fill="#94A3B8" font-size="11.5">LAN · SSH · Tailscale · 远程桌面</text>
+      <text x="944" y="497" fill="#94A3B8" font-size="11" opacity="0.85">低延迟保留，与 Claude 沙盒严格隔离</text>
+    </g>
+  </g>
+</svg>

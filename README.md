@@ -8,32 +8,21 @@
 
 只开系统代理或只设 `HTTPS_PROXY` 环境变量，拦不住子进程原生直连、UDP/WebRTC 旁路，也挡不住代理客户端意外退出后的静默回落直连。**Claude Local Onboard** 让你的 Agent 按标准化 7 阶段流程，在任意 Mac（Apple Silicon 或 Intel）上搭出一套**双层防泄漏、代理断连即阻断（fail-closed）、可实测验收、可随时回退**的本地工作环境。
 
+<p align="center">
+  <img src="assets/hero-architecture.svg" alt="Claude Local Onboard Architecture" width="100%">
+</p>
+
 ---
 
 ## 适用边界
 
 本 skill 只用于降低本机 Claude Code 接入环境的泄漏风险：代理/TUN、DNS、IPv6、WebRTC、进程旁路、工具输出等。
 
-它不提供账号注册、订阅购买、KYC/身份验证、Claude Desktop 使用、平台风控或封禁处理方面的帮助，也不承诺通过任何平台的风险检查；这些请按官方流程处理。
+它不提供账号注册、订阅购买、KYC/身份验证、Claude Desktop 正式支持、平台风控或封禁处理方面的帮助，也不承诺通过任何平台的风险检查；这些请按官方流程处理。（注：关于尝试用 `sandbox-exec` 或 `TUN + pf` 约束 Claude Desktop 的实验性机制分析［未实机验证］，收录在 [`seatbelt-and-launcher.md`](references/seatbelt-and-launcher.md) 供参考。）
 
 ---
 
 ## 核心设计：为什么它能防旁路、防断连回落
-
-```mermaid
-flowchart LR
-  subgraph Host["macOS 本机受控边界"]
-    CLI["Claude Code CLI 及全子进程树<br/>(bash / curl / git / node / MCP)"]
-    SB["macOS sandbox-exec (Seatbelt)<br/>禁止一切公网 TCP/UDP/IPv6 直连<br/>仅放行 localhost 代理端口，封禁 9090 控制口"]
-    BR["独立指纹浏览器 Profile<br/>(AdsPower / MoreLogin / CCBaga / 独立 Chrome)<br/>禁用非代理 WebRTC UDP + 对齐时区语言"]
-    PRX["Mihomo 系客户端 / TUN<br/>127.0.0.1:7890 + 持久覆写规则"]
-  end
-
-  CLI --> SB --> PRX
-  BR --> PRX
-  PRX -->|"锁定单一 FIXED-EXIT"| EXIT["固定目标出口节点<br/>(API 请求 + DoH 远端解析)"]
-  PRX -.->|"显式白名单 DIRECT"| LAN["日常必需直连<br/>(LAN / SSH / Tailscale / 远程桌面)"]
-```
 
 1. **进程级内核强制沙盒（`sandbox-exec`）**：不依赖程序“自觉读取代理变量”。通过 macOS 原生 Seatbelt 策略拦截 Claude Code 及所有子进程的非回环网络出站，直连公网 IPv4 / IPv6 / UDP 一律在内核层返回 `EPERM`；同时封禁代理管理端口与订阅配置文件读取。
 2. **启动前预检 + 代理停机 fail-closed**：统一入口 `~/.local/bin/claude` 启动前先对本地代理发起 `CONNECT` 预检；运行期间哪怕代理客户端崩溃或 TUN 网卡消失，流量也立即阻断而绝不回落物理网卡直连。
@@ -92,6 +81,8 @@ claude-local-onboard/
 ├── README.md                                # 项目说明与快速上手
 ├── CONTRIBUTING.md                          # 贡献与实机验证规范
 ├── LICENSE                                  # MIT License
+├── assets/
+│   └── hero-architecture.svg                # 双层受控架构矢量总览图
 └── references/                              # Agent 按阶段按需读取的技术参考
     ├── signals-and-architecture.md          # 信号暴露模型与模式 A/B/C 架构对比
     ├── preflight-and-cleanup.md             # 只读盘点、Claude 本机路径全表与备份清理

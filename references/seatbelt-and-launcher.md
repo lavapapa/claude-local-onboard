@@ -196,3 +196,41 @@ except OSError as e:
 ```
 
 **回退方法**：若需恢复无包装的原生入口，将 `~/.local/bin/claude` 重新软链回 `~/.local/share/claude/versions/<最新版本>`，并保留或移除 `~/.config/claude-network/` 与 `~/.local/bin/claude-network-run`。
+
+## 6. 延伸：能否用 `sandbox-exec` 启动并控制 Claude Desktop？（实验项 · 未实测）
+
+> **说明**：以下内容基于 macOS XNU Seatbelt 与 Electron/Chromium 架构机制整理，**尚未在本仓库流程中做实机验收**，仅作为实验性技术参考，不纳入默认验收承诺。
+
+### 1) 直接套 `sandbox-exec` 为什么默认会冲突崩溃
+
+macOS 版 `Claude.app`（`/Applications/Claude.app/Contents/MacOS/Claude`）基于 **Electron（Chromium）** 构建。在启动渲染进程（Renderer）、GPU 进程与网络/工具辅助进程时，Chromium 内部会调用系统 `sandbox_init()` 为子进程挂载内层安全沙盒。
+
+而 macOS XNU 内核对 Seatbelt 有一条硬性限制：**禁止沙盒嵌套（`forbidden-sandbox-reinit`）**。一旦父进程已经运行在外层 `sandbox-exec` 中，Electron 子进程再次调用 `sandbox_init()` 就会被内核直接拒绝（`Operation not permitted`），导致桌面端白屏或立即崩溃退出。
+
+### 2) 实验性命令行启动思路（关闭内层沙盒，保留外层网络封锁）
+
+若通过命令行显式传入 `--no-sandbox` 关闭 Electron 内层渲染沙盒，并同时指定本地 HTTP 代理参数，从机制上讲，`Claude.app` 主进程、Network Service 以及它拉起的全部本地 MCP 子进程都会继承外层 `outbound.sb` 的内核网络约束（非回环 TCP/UDP/IPv6 直连同样会被 `EPERM` 拦截，代理停机时同样 fail-closed）：
+
+```bash
+# 实验性启动命令示例（未实机验证）
+TZ="America/Los_Angeles" LANG="en_US.UTF-8" \
+"$HOME/.local/bin/claude-network-run" \
+  "/Applications/Claude.app/Contents/MacOS/Claude" \
+  --no-sandbox \
+  --proxy-server="http://127.0.0.1:7890" \
+  --host-resolver-rules="MAP * ~NOTFOUND , EXCLUDE 127.0.0.1 , EXCLUDE localhost" \
+  --disable-quic
+```
+
+### 3) 该实验路径的三项固有缺陷
+
+1. **牺牲渲染层隔离**：`--no-sandbox` 关闭了 Chromium 对网页渲染进程的沙盒隔离；在桌面端预览第三方网页工件（Artifacts）或接入不可信外部 MCP 时，本机安全边界下降。
+2. **系统图形入口极易旁路**：用户点击 Dock 图标、通过 Spotlight 搜索、点击 `claude://` OAuth 协议回调链接，或客户端完成内置热更新（ShipIt/Squirrel）自动重启时，macOS `launchd` 都会直接拉起裸 `/Applications/Claude.app`，完全绕过终端包装脚本与 `sandbox-exec`。
+3. **未覆盖内置组件边角验证**：Electron 原生自动更新框架或特定系统框架在受限环境下的兼容性未经完整回归测试。
+
+### 4) 若需严格控制 Claude Desktop 的更稳妥方向
+
+如果希望在不破坏 Electron 自身内层沙盒、且不惧 Dock/协议回调旁路的前提下管住 `Claude.app`，建议优先考虑以下两条系统级路线而非外层 `sandbox-exec`：
+
+- **本机 TUN + `pf` 防火墙组合**：在 Mihomo TUN 中通过 `PROCESS-PATH-REGEX,^/Applications/Claude\.app/.*,FIXED-EXIT` 锁定桌面端全进程出口，并配合 macOS `pf` 防火墙规则禁止非代理进程直接从物理网卡（如 `en0`）发包以实现停机 fail-closed；
+- **轻量虚拟机隔离**：将桌面端运行在独立的 macOS Virtualization.framework / Linux 客机内，由宿主机统一控制虚拟网卡出口。
